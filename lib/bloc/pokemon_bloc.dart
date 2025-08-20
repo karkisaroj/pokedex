@@ -1,29 +1,27 @@
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pokedex/bloc/pokemon_event.dart';
 import 'package:pokedex/bloc/pokemon_state.dart';
 
 import '../pokemon_repo.dart';
 
-class PokemonBloc extends Cubit<PokemonState> {
-  final _pokemonRepository = PokemonRepository();//network bata api fetch handle grnako lagi
+class PokemonBloc extends Bloc<PokemonEvent, PokemonState> {
+  final _pokemonRepository = PokemonRepository();
 
-  PokemonBloc() : super(PokemonInitial());
+  PokemonBloc() : super(PokemonInitial()) {
+    on<PokemonPageRequest>(_onPokemonPageRequest);
+  }
 
-  @override
-  Stream<PokemonState> mapEventToState(PokemonEvent event) async* {
-    if (event is PokemonPageRequest) {
-      yield PokemonLoadInProgress();
-
-      try {
-        final pokemonPageResponse =
-        await _pokemonRepository.getPokemonPage(event.page);
-        yield PokemonPageLoadSuccess(
-            pokemonListings: pokemonPageResponse.pokemonListings,
-            canLoadNextPage: pokemonPageResponse.canLoadNextPage);
-      } catch (e) {
-        yield PokemonPageLoadFailed(error: e);
-      }
+  Future<void> _onPokemonPageRequest(
+      PokemonPageRequest event, Emitter<PokemonState> emit) async {
+    emit(PokemonLoadInProgress());
+    try {
+      final pokemonPageResponse =
+          await _pokemonRepository.getPokemonPage(event.page);
+      emit(PokemonPageLoadSuccess(
+          pokemonListings: pokemonPageResponse.pokemonListings,
+          canLoadNextPage: pokemonPageResponse.canLoadNextPage));
+    } catch (e) {
+      emit(PokemonPageLoadFailed(error: e.toString()));
     }
   }
 }

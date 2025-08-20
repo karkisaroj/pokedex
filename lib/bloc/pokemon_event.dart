@@ -1,11 +1,7 @@
-
-abstract class PokemonEvent {
-  int get page => null;
-}
+abstract class PokemonEvent {}
 
 class PokemonPageRequest extends PokemonEvent {
   final int page;
 
   PokemonPageRequest({required this.page});
-
 }

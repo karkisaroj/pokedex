@@ -9,6 +9,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,7 +18,8 @@ class MyApp extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => PokemonBloc()..add(PokemonPageRequest(page: 0)))
+              create: (context) =>
+                  PokemonBloc()..add(PokemonPageRequest(page: 0)))
         ],
         child: PokedexView(),
       ),
